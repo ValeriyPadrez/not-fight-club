@@ -1,0 +1,84 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 40px;
+  background-color: #fff;
+}
+
+h2 {
+  margin-bottom: 30px;
+  border-bottom: 2px solid black;
+  display: inline-block;
+  padding-bottom: 5px;
+  text-align: center;
+  width: 100%;
+}
+
+.character-box {
+  display: flex;
+  align-items: center;
+  margin: 0px;
+  max-width: 800px;
+  padding: 0; 
+  gap: 40px;
+}
+
+.character-left {
+  margin: 0;
+  padding: 0;
+}
+
+.character-left .avatar {
+  width: 250px;
+  border-radius: 20px;
+  border: none;
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+
+.character-right {
+  font-size: 18px;
+  text-align: left;
+  margin: 0;
+  padding: 0;
+}
+
+.character-right p {
+  margin: 8px 0;
+}
+
+.wins {
+  color: green;
+}
+
+.loses {
+  color: red;
+}
+
+.avatar-selection {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-right: 1400px;
+}
+
+.avatar-option {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: 0.2s;
+}
+
+.avatar-option:hover {
+  border-color: #000;
+  transform: scale(1.05);
+}
+
+input[type="file"] {
+  display: block;
+  margin: 10px auto;
+}

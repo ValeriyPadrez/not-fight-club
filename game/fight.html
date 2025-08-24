@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Battle</title>
+  <link rel="stylesheet" href="/not-fight-club/game/fight.css" />
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="logo">Battle</div>
+      <nav class="nav-icons">
+        <button title="Home" aria-label="Home">🏠</button>
+        <button title="Player" aria-label="Player">👤</button>
+        <button title="Settings" aria-label="Settings">⚙️</button>
+      </nav>
+    </div>
+    <hr />
+  </header>
+
+  <main class="container">
+    <section class="fighter player">
+      <div class="name" id="player-name">22</div>
+      <img id="player-img" src="https://i.imgur.com/9bXkGRh.png" alt="Player" />
+      <div class="health-bar">
+        <div class="health-current" id="player-health-bar"></div>
+      </div>
+      <div class="health-text" id="player-health-text"></div>
+    </section>
+
+    <section class="battle-controls">
+      <p>Please pick 1 Attack zone and 2 Defence zones</p>
+      <div class="zones">
+        <div>
+          <div><strong>Attack Zones</strong></div>
+          <label><input type="radio" name="attack-zone" value="Head" /> Head</label>
+          <label><input type="radio" name="attack-zone" value="Neck" /> Neck</label>
+          <label><input type="radio" name="attack-zone" value="Body" /> Body</label>
+          <label><input type="radio" name="attack-zone" value="Belly" /> Belly</label>
+          <label><input type="radio" name="attack-zone" value="Legs" /> Legs</label>
+        </div>
+        <div>
+          <div><strong>Defence Zones</strong></div>
+          <label><input type="checkbox" name="defense-zone" value="Head" /> Head</label>
+          <label><input type="checkbox" name="defense-zone" value="Neck" /> Neck</label>
+          <label><input type="checkbox" name="defense-zone" value="Body" /> Body</label>
+          <label><input type="checkbox" name="defense-zone" value="Belly" /> Belly</label>
+          <label><input type="checkbox" name="defense-zone" value="Legs" /> Legs</label>
+        </div>
+      </div>
+      <button id="attack-btn" disabled>Attack!</button>
+    </section>
+
+    <section class="fighter enemy">
+      <div class="name" id="enemy-name">Snow troll</div>
+      <img id="enemy-img" src="https://i.imgur.com/7hR3rlb.png" alt="Enemy" />
+      <div class="health-bar">
+        <div class="health-current" id="enemy-health-bar"></div>
+      </div>
+      <div class="health-text" id="enemy-health-text"></div>
+    </section>
+  </main>
+
+  <hr />
+
+  <section class="log-container container">
+    <ul id="battle-log"></ul>
+  </section>
+
+  <script src="/not-fight-club/game/fight.js"></script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 40px;
+  background-color: #fff;
+}
+
+h2 {
+  margin-bottom: 10px;
+}
+
+hr {
+  height: 3px;
+  background-color: black;
+  border: none;
+  margin-bottom: 30px;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  justify-content: center;
+}
+
+#playerNameInput {
+  font-size: 18px;
+  padding: 4px;
+}
+
+button {
+  font-size: 16px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid gray;
+  cursor: pointer;
+}

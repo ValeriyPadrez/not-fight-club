@@ -1,0 +1,175 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Georgia, serif;
+  margin: 0;
+  background: white;
+  color: black;
+  user-select: none;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+header {
+  padding: 10px 0;
+}
+
+.logo {
+  font-size: 16px;
+  display: inline-block;
+}
+
+.nav-icons {
+  float: right;
+}
+
+.nav-icons button {
+  font-size: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+hr {
+  border: none;
+  border-top: 3px solid black;
+  margin: 10px 0 20px;
+}
+
+main.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.fighter {
+  text-align: center;
+  width: 200px;
+  font-size: 14px;
+}
+
+.fighter .name {
+  margin-bottom: 5px;
+}
+
+.fighter img {
+  width: 150px;
+  height: auto;
+  display: block;
+  margin: 0 auto 10px;
+}
+
+.health-bar {
+  width: 150px;
+  height: 12px;
+  background: #777;
+  border-radius: 10px;
+  margin: 0 auto 5px;
+  overflow: hidden;
+}
+
+.health-current {
+  height: 100%;
+  background-color: firebrick;
+  width: 100%;
+  transition: width 0.3s ease;
+}
+
+.health-text {
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+.battle-controls {
+  width: 200px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.battle-controls p {
+  margin-bottom: 10px;
+  font-weight: normal;
+}
+
+.zones {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.zones > div {
+  flex: 1;
+  text-align: left;
+}
+
+.zones strong {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+#attack-btn {
+  padding: 6px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1px solid #999;
+  border-radius: 5px;
+  background-color: #eee;
+  transition: background-color 0.2s;
+}
+
+#attack-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+#attack-btn:not(:disabled):hover {
+  background-color: #ddd;
+}
+
+/* Лог боя */
+.log-container {
+  font-size: 14px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+#battle-log {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid #ccc;
+}
+
+#battle-log li {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+#battle-log strong {
+  font-weight: bold;
+  color: navy;
+}
