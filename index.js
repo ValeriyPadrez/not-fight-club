@@ -3,9 +3,10 @@ document.getElementById('createBtn').addEventListener('click', function (e) {
   const errorMsg = document.getElementById('errorMsg');
 
   if (!nameInput) {
-    e.preventDefault(); 
+    e.preventDefault();  // Отменит переход, но для ссылки лучше сделать return false
     errorMsg.textContent = 'Please enter a character name.';
     errorMsg.style.color = 'red';
+    e.preventDefault();  // отменяем переход
     return;
   }
 

@@ -1,26 +1,39 @@
 const playerNameSpan = document.getElementById('playerName');
-const playerNameInput = document.getElementById('playerNameInput');
-const editBtn = document.getElementById('editBtn');
+const characterNameInput = document.getElementById('characterName');
+const saveBtn = document.getElementById('saveBtn');
+const msg = document.getElementById('msg');
 
-editBtn.addEventListener('click', () => {
-  if (editBtn.textContent === 'Edit') {
-    playerNameInput.value = playerNameSpan.textContent;
-    playerNameSpan.style.display = 'none';
-    playerNameInput.style.display = 'inline';
-    editBtn.textContent = 'Save';
-  } else {
-    playerNameSpan.textContent = playerNameInput.value.trim() || 'Unnamed';
-    playerNameSpan.style.display = 'inline';
-    playerNameInput.style.display = 'none';
-    editBtn.textContent = 'Edit';
-
-    localStorage.setItem('playerName', playerNameSpan.textContent);
-  }
+// При загрузке страницы — показать имя из localStorage
+window.addEventListener('DOMContentLoaded', () => {
+  const savedName = localStorage.getItem('characterName') || 'Unknown';
+  playerNameSpan.textContent = savedName;
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-  const savedName = localStorage.getItem('playerName');
-  if (savedName) {
-    playerNameSpan.textContent = savedName;
+saveBtn.addEventListener('click', () => {
+  if (saveBtn.textContent === 'Edit') {
+    // Переключаемся в режим редактирования
+    characterNameInput.style.display = 'inline-block';
+    characterNameInput.value = playerNameSpan.textContent;
+    playerNameSpan.style.display = 'none';
+    saveBtn.textContent = 'Save';
+    msg.textContent = '';
+  } else {
+    // Сохраняем новое имя
+    const input = characterNameInput.value.trim();
+    if (!input) {
+      msg.textContent = 'Name cannot be empty';
+      msg.style.color = 'red';
+      return;
+    }
+
+    localStorage.setItem('characterName', input);
+    playerNameSpan.textContent = input;
+
+    characterNameInput.style.display = 'none';
+    playerNameSpan.style.display = 'inline';
+    saveBtn.textContent = 'Edit';
+
+    msg.textContent = 'Name saved!';
+    msg.style.color = 'green';
   }
 });

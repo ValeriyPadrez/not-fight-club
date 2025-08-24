@@ -1,228 +1,260 @@
-// Здоровье и параметры игроков
-const players = {
-  player: {
-    name: '22',
-    maxHealth: 150,
-    health: 130,
-    critChance: 0.2,
-    critMultiplier: 1.5,
-    attackDamage: 20,
-  },
-  enemies: [
-    {
-      name: 'Snow troll',
-      maxHealth: 150,
-      health: 150,
-      critChance: 0.15,
-      critMultiplier: 1.5,
-      attackDamage: 20,
-      attackZonesCount: 1,
-      defenseZonesCount: 3,
-      img: 'https://i.imgur.com/7hR3rlb.png',
-    },
-    {
-      name: 'Spider',
-      maxHealth: 100,
-      health: 100,
-      critChance: 0.25,
-      critMultiplier: 1.5,
-      attackDamage: 15,
-      attackZonesCount: 2,
-      defenseZonesCount: 1,
-      img: 'https://i.imgur.com/sY1W7xB.png', // Можно заменить
-    }
-  ],
+const player = {
+  name: "22",
+  avatar: "https://i.imgur.com/cvltWJM.png",
+  maxHP: 150,
+  currentHP: 150,
+  damage: 15,
+  critChance: 0.15,
+  critMultiplier: 1.5,
 };
 
-// Элементы DOM
-const playerNameEl = document.getElementById('player-name');
-const playerHealthBar = document.getElementById('player-health-bar');
-const playerHealthText = document.getElementById('player-health-text');
-const playerImg = document.getElementById('player-img');
+const enemies = [
+  {
+    name: "Snow troll",
+    avatar: "/mnt/data/476457306-b5ef4a0b-db51-4382-98e9-3939c7351ac0.png",
+    maxHP: 150,
+    currentHP: 150,
+    damage: 12,
+    critChance: 0.1,
+    critMultiplier: 1.5,
+    attackZonesCount: 1,
+    defenseZonesCount: 3,
+    zones: ["head", "neck", "body", "belly", "legs"],
+  },
+  {
+    name: "Spider",
+    avatar: "https://i.imgur.com/FQ3bOzz.png",
+    maxHP: 120,
+    currentHP: 120,
+    damage: 10,
+    critChance: 0.2,
+    critMultiplier: 1.7,
+    attackZonesCount: 2,
+    defenseZonesCount: 1,
+    zones: ["head", "neck", "body", "belly", "legs"],
+  },
+];
 
-const enemyNameEl = document.getElementById('enemy-name');
-const enemyHealthBar = document.getElementById('enemy-health-bar');
-const enemyHealthText = document.getElementById('enemy-health-text');
-const enemyImg = document.getElementById('enemy-img');
+let enemy = enemies[0];
 
-const attackBtn = document.getElementById('attack-btn');
-const battleLog = document.getElementById('battle-log');
+const playerNameEl = document.getElementById("playerName");
+const playerAvatarEl = document.getElementById("playerAvatar");
+const playerHPBarEl = document.getElementById("playerHPBar");
+const playerHPTextEl = document.getElementById("playerHPText");
 
-const attackZoneRadios = document.querySelectorAll('input[name="attack-zone"]');
-const defenseZoneCheckboxes = document.querySelectorAll('input[name="defense-zone"]');
+const enemyNameEl = document.getElementById("enemyName");
+const enemyAvatarEl = document.getElementById("enemyAvatar");
+const enemyHPBarEl = document.getElementById("enemyHPBar");
+const enemyHPTextEl = document.getElementById("enemyHPText");
 
-const attackZones = ['Head', 'Neck', 'Body', 'Belly', 'Legs'];
+const attackForm = document.getElementById("attackForm");
+const attackBtn = document.getElementById("attackBtn");
+const battleLog = document.getElementById("battleLog");
 
-let currentEnemy;
+const validZones = ["head", "neck", "body", "belly", "legs"];
 
-// Инициализация боя
-function initBattle() {
-  // Выбираем случайного врага из пула
-  currentEnemy = players.enemies[Math.floor(Math.random() * players.enemies.length)];
+function init() {
+  playerNameEl.textContent = player.name;
+  playerAvatarEl.src = player.avatar;
+  enemyNameEl.textContent = enemy.name;
+  enemyAvatarEl.src = enemy.avatar;
 
-  enemyNameEl.textContent = currentEnemy.name;
-  enemyImg.src = currentEnemy.img;
+  updateHealthBars();
 
-  updateHealthUI();
-  clearSelections();
-  battleLog.innerHTML = '';
+  attackForm.addEventListener("change", checkFormValidity);
+  attackForm.addEventListener("submit", onAttack);
+
   attackBtn.disabled = true;
 }
 
-function updateHealthUI() {
-  playerHealthBar.style.width = (players.player.health / players.player.maxHealth) * 100 + '%';
-  playerHealthText.textContent = `${players.player.health}/${players.player.maxHealth}`;
+function updateHealthBars() {
+  const playerHPPercent = Math.max(0, (player.currentHP / player.maxHP) * 100);
+  const enemyHPPercent = Math.max(0, (enemy.currentHP / enemy.maxHP) * 100);
 
-  enemyHealthBar.style.width = (currentEnemy.health / currentEnemy.maxHealth) * 100 + '%';
-  enemyHealthText.textContent = `${currentEnemy.health}/${currentEnemy.maxHealth}`;
+  playerHPBarEl.style.width = playerHPPercent + "%";
+  playerHPTextEl.textContent = `${player.currentHP}/${player.maxHP}`;
+
+  enemyHPBarEl.style.width = enemyHPPercent + "%";
+  enemyHPTextEl.textContent = `${enemy.currentHP}/${enemy.maxHP}`;
 }
 
-function clearSelections() {
-  attackZoneRadios.forEach(r => (r.checked = false));
-  defenseZoneCheckboxes.forEach(c => (c.checked = false));
-}
+function checkFormValidity() {
+  const attack = attackForm.attack.value;
+  const defenses = Array.from(attackForm.defense)
+    .filter((cb) => cb.checked)
+    .map((cb) => cb.value);
 
-// Проверка выбора пользователя - 1 атака, 2 защиты
-function checkSelections() {
-  const attackSelected = [...attackZoneRadios].some(r => r.checked);
-  const defenseSelectedCount = [...defenseZoneCheckboxes].filter(c => c.checked).length;
-
-  attackBtn.disabled = !(attackSelected && defenseSelectedCount === 2);
-}
-
-// Получить выбранные зоны
-function getPlayerChoices() {
-  const attack = [...attackZoneRadios].find(r => r.checked)?.value;
-  const defenses = [...defenseZoneCheckboxes].filter(c => c.checked).map(c => c.value);
-  return { attack, defenses };
-}
-
-// Генерация уникальных случайных зон для противника
-function getRandomZones(count) {
-  const zones = new Set();
-  while (zones.size < count) {
-    const randomZone = attackZones[Math.floor(Math.random() * attackZones.length)];
-    zones.add(randomZone);
-  }
-  return Array.from(zones);
-}
-
-// Логика удара и защиты
-function calculateDamage(attacker, defender, attackZone, defenderDefenses) {
-  let isBlocked = defenderDefenses.includes(attackZone);
-  let damage = 0;
-  let isCrit = false;
-
-  if (!isBlocked) {
-    damage = attacker.attackDamage;
-    // Критический удар
-    if (Math.random() < attacker.critChance) {
-      damage = Math.floor(damage * attacker.critMultiplier);
-      isCrit = true;
-    }
+  if (attack && defenses.length === 2) {
+    attackBtn.disabled = false;
+    attackBtn.classList.add("enabled");
   } else {
-    // Если блокирован, шанс критического пробития блока
-    if (Math.random() < attacker.critChance) {
-      damage = Math.floor(attacker.attackDamage * attacker.critMultiplier);
-      isBlocked = false; // блок пробит
-      isCrit = true;
-    }
+    attackBtn.disabled = true;
+    attackBtn.classList.remove("enabled");
   }
-
-  return { damage, isBlocked, isCrit };
 }
 
-// Добавить запись в лог
-function addLog(text) {
-  const li = document.createElement('li');
-  li.innerHTML = text;
-  battleLog.appendChild(li);
+function getRandomZones(availableZones, count) {
+  const result = [];
+  while (result.length < count) {
+    const zone = availableZones[Math.floor(Math.random() * availableZones.length)];
+    if (!result.includes(zone)) {
+      result.push(zone);
+    }
+  }
+  return result;
+}
+
+function addLog(attacker, target, zone, damage, blocked, crit) {
+  const p = document.createElement("p");
+
+  const attackerSpan = `<strong class="attacker">${attacker}</strong>`;
+  const targetSpan = `<strong class="target">${target}</strong>`;
+  const zoneSpan = `<strong class="zone">${zone}</strong>`;
+  const damageSpan = `<strong class="damage">${damage}</strong>`;
+  const blockedSpan = `<span class="blocked">blocked</span>`;
+  const critSpan = `<span class="crit"> critical hit</span>`;
+
+  if (damage === 0) {
+    p.innerHTML = `${attackerSpan} attacked ${targetSpan} on the ${zoneSpan}, but ${targetSpan} ${blockedSpan}.`;
+  } else {
+    p.innerHTML = `${attackerSpan} attacked ${targetSpan} on the ${zoneSpan} and dealt${crit ? " a" : " "} ${critSpan} ${damageSpan} damage.`;
+  }
+  battleLog.appendChild(p);
   battleLog.scrollTop = battleLog.scrollHeight;
 }
 
-// Обработчик атаки
-function handleAttack() {
-  const { attack: playerAttack, defenses: playerDefenses } = getPlayerChoices();
+function onAttack(event) {
+  event.preventDefault();
 
-  // Выбираем случайные атаки и защиты противника
-  const enemyAttackZones = getRandomZones(currentEnemy.attackZonesCount);
-  const enemyDefenseZones = getRandomZones(currentEnemy.defenseZonesCount);
+  const playerAttack = attackForm.attack.value;
+  const playerDefenses = Array.from(attackForm.defense)
+    .filter((cb) => cb.checked)
+    .map((cb) => cb.value);
 
-  // --- Игрок атакует врага ---
-  const playerHit = calculateDamage(
-    players.player,
-    currentEnemy,
-    playerAttack,
-    enemyDefenseZones
-  );
-  currentEnemy.health = Math.max(0, currentEnemy.health - playerHit.damage);
+  const enemyAttack = getRandomZones(enemy.zones, enemy.attackZonesCount);
+  const enemyDefenses = getRandomZones(enemy.zones, enemy.defenseZonesCount);
 
-  // --- Враг атакует игрока ---
-  let totalEnemyDamage = 0;
-  let enemyHitsLog = [];
+  let playerHitBlocked = false;
+  let playerDamageDealt = 0;
+  let playerCritHit = false;
 
-  for (const zone of enemyAttackZones) {
-    const hit = calculateDamage(
-      currentEnemy,
-      players.player,
-      zone,
-      playerDefenses
-    );
-    players.player.health = Math.max(0, players.player.health - hit.damage);
-    totalEnemyDamage += hit.damage;
+  const playerCritRoll = Math.random() < player.critChance;
 
-    // Добавляем в лог для каждого удара
-    const hitText = `<strong>${currentEnemy.name}</strong> attacked <strong>${players.player.name}</strong> to <strong>${zone}</strong> and deal ${
-      hit.damage === 0 ? 'no' : hit.damage
-    } damage${hit.isCrit ? ' (critical hit!)' : ''}.`;
-    enemyHitsLog.push(hitText);
+  if (enemyDefenses.includes(playerAttack)) {
+    if (playerCritRoll) {
+      playerCritHit = true;
+      playerDamageDealt = Math.floor(player.damage * player.critMultiplier);
+    } else {
+      playerDamageDealt = 0;
+      playerHitBlocked = true;
+    }
+  } else {
+    playerDamageDealt = playerCritRoll
+      ? Math.floor(player.damage * player.critMultiplier)
+      : player.damage;
+    playerCritHit = playerCritRoll;
   }
 
-  // Лог игрока
-  let playerLog = `<strong>${players.player.name}</strong> attacked <strong>${currentEnemy.name}</strong> to <strong>${playerAttack}</strong> but ${
-    playerHit.isBlocked ? 'was blocked' : `dealt <strong>${playerHit.damage}</strong> damage`
-  }${playerHit.isCrit ? ' (critical hit!)' : ''}.`;
+  enemy.currentHP -= playerDamageDealt;
+  if (enemy.currentHP < 0) enemy.currentHP = 0;
 
-  addLog(playerLog);
+  addLog(player.name, enemy.name, playerAttack, playerDamageDealt, playerHitBlocked, playerCritHit);
 
-  // Логи врага
-  enemyHitsLog.forEach(log => addLog(log));
+  enemyAttack.forEach((zone) => {
+    const enemyCritRoll = Math.random() < enemy.critChance;
+    let enemyHitBlocked = false;
+    let enemyDamageDealt = 0;
+    let enemyCritHit = false;
 
-  updateHealthUI();
+    if (playerDefenses.includes(zone)) {
+      if (enemyCritRoll) {
+        enemyCritHit = true;
+        enemyDamageDealt = Math.floor(enemy.damage * enemy.critMultiplier);
+      } else {
+        enemyDamageDealt = 0;
+        enemyHitBlocked = true;
+      }
+    } else {
+      enemyDamageDealt = enemyCritRoll
+        ? Math.floor(enemy.damage * enemy.critMultiplier)
+        : enemy.damage;
+      enemyCritHit = enemyCritRoll;
+    }
 
-  // Проверяем кто выиграл
-  if (players.player.health <= 0 && currentEnemy.health <= 0) {
-    addLog('<strong>Draw!</strong>');
+    player.currentHP -= enemyDamageDealt;
+    if (player.currentHP < 0) player.currentHP = 0;
+
+    addLog(enemy.name, player.name, zone, enemyDamageDealt, enemyHitBlocked, enemyCritHit);
+  });
+
+  updateHealthBars();
+
+  if (player.currentHP === 0 || enemy.currentHP === 0) {
     attackBtn.disabled = true;
-  } else if (players.player.health <= 0) {
-    addLog(`<strong>${currentEnemy.name} wins!</strong>`);
+    attackBtn.classList.remove("enabled");
+    attackBtn.textContent = "Battle over";
+
+    let winner = player.currentHP === 0 ? enemy.name : player.name;
+    addLog("System", "", "", 0, false, false);
+    const endMsg = document.createElement("p");
+    endMsg.style.fontWeight = "bold";
+    endMsg.style.color = "#a22";
+    endMsg.textContent = `Winner: ${winner}`;
+    battleLog.appendChild(endMsg);
+  } else {
+    attackForm.reset();
     attackBtn.disabled = true;
-  } else if (currentEnemy.health <= 0) {
-    addLog(`<strong>${players.player.name} wins!</strong>`);
-    attackBtn.disabled = true;
+    attackBtn.classList.remove("enabled");
   }
-
-  // Сбрасываем выбор для следующего хода
-  clearSelections();
-  attackBtn.disabled = true;
 }
 
-// Слушатели выбора зон
-attackZoneRadios.forEach(radio =>
-  radio.addEventListener('change', checkSelections)
-);
-defenseZoneCheckboxes.forEach(checkbox =>
-  checkbox.addEventListener('change', () => {
-    const checked = [...defenseZoneCheckboxes].filter(c => c.checked);
-    // Запрещаем выбирать больше 2 зон защиты
-    if (checked.length > 2) {
-      checkbox.checked = false;
+document.addEventListener('DOMContentLoaded', () => {
+  const playerName = localStorage.getItem('characterName') || 'Unknown';
+  document.getElementById('playerName').textContent = playerName;
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const savedName = localStorage.getItem('characterName');
+  const savedAvatar = localStorage.getItem('avatarSrc');
+
+  if (savedName) {
+    // Отобразить имя, если нужно
+    const nameElement = document.getElementById('fightPlayerName');
+    if (nameElement) {
+      nameElement.textContent = savedName;
     }
-    checkSelections();
-  })
-);
+  }
 
-attackBtn.addEventListener('click', handleAttack);
+  if (savedAvatar) {
+    const avatarElement = document.getElementById('fightAvatar');
+    if (avatarElement) {
+      avatarElement.src = savedAvatar;
+    }
+  }
+});
 
-// Инициализация страницы
-initBattle();
+function updateStats(result) {
+  // result = 'win' или 'lose'
+  let wins = +localStorage.getItem('wins') || 0;
+  let loses = +localStorage.getItem('loses') || 0;
+
+  if (result === 'win') wins++;
+  if (result === 'lose') loses++;
+
+  localStorage.setItem('wins', wins);
+  localStorage.setItem('loses', loses);
+}
+
+// В момент, когда заканчивается бой, например:
+function finishBattle(playerWon) {
+  if (playerWon) {
+    updateStats('win');
+  } else {
+    updateStats('lose');
+  }
+  // Другой код: вывод результата, обновление UI и т.п.
+}
+
+init();
+
+

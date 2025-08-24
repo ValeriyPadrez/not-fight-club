@@ -1,73 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Battle</title>
-  <link rel="stylesheet" href="/not-fight-club/game/fight.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fight</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="/not-fight-club/game/fight.css" />
 </head>
 <body>
-  <header>
-    <div class="container">
-      <div class="logo">Battle</div>
-      <nav class="nav-icons">
-        <button title="Home" aria-label="Home">🏠</button>
-        <button title="Player" aria-label="Player">👤</button>
-        <button title="Settings" aria-label="Settings">⚙️</button>
-      </nav>
+<header>
+  <div class="header-left">Battle</div>
+  <nav class="header-right">
+    <a href="/not-fight-club/index.html" title="Home"><i class="fa-solid fa-house"></i></a>
+    <a href="/not-fight-club/character/character.html" title="Profile"><i class="fa-solid fa-user"></i></a>
+    <a href="/not-fight-club/settings/settings.html" title="Settings"><i class="fa-solid fa-gear"></i></a>
+  </nav>
+</header>
+<hr />
+
+<main class="battle-container">
+  <section class="fighter player" aria-label="Player">
+    <div class="fighter-name" id="playerName">22</div>
+    <img
+      id="playerAvatar"
+      src="https://i.imgur.com/cvltWJM.png"
+      alt="Player avatar"
+      width="200"
+      height="300"
+      decoding="async"
+      loading="lazy"
+    />
+    <div class="hp-bar">
+      <div class="hp-current" id="playerHPBar"></div>
     </div>
-    <hr />
-  </header>
-
-  <main class="container">
-    <section class="fighter player">
-      <div class="name" id="player-name">22</div>
-      <img id="player-img" src="https://i.imgur.com/9bXkGRh.png" alt="Player" />
-      <div class="health-bar">
-        <div class="health-current" id="player-health-bar"></div>
-      </div>
-      <div class="health-text" id="player-health-text"></div>
-    </section>
-
-    <section class="battle-controls">
-      <p>Please pick 1 Attack zone and 2 Defence zones</p>
-      <div class="zones">
-        <div>
-          <div><strong>Attack Zones</strong></div>
-          <label><input type="radio" name="attack-zone" value="Head" /> Head</label>
-          <label><input type="radio" name="attack-zone" value="Neck" /> Neck</label>
-          <label><input type="radio" name="attack-zone" value="Body" /> Body</label>
-          <label><input type="radio" name="attack-zone" value="Belly" /> Belly</label>
-          <label><input type="radio" name="attack-zone" value="Legs" /> Legs</label>
-        </div>
-        <div>
-          <div><strong>Defence Zones</strong></div>
-          <label><input type="checkbox" name="defense-zone" value="Head" /> Head</label>
-          <label><input type="checkbox" name="defense-zone" value="Neck" /> Neck</label>
-          <label><input type="checkbox" name="defense-zone" value="Body" /> Body</label>
-          <label><input type="checkbox" name="defense-zone" value="Belly" /> Belly</label>
-          <label><input type="checkbox" name="defense-zone" value="Legs" /> Legs</label>
-        </div>
-      </div>
-      <button id="attack-btn" disabled>Attack!</button>
-    </section>
-
-    <section class="fighter enemy">
-      <div class="name" id="enemy-name">Snow troll</div>
-      <img id="enemy-img" src="https://i.imgur.com/7hR3rlb.png" alt="Enemy" />
-      <div class="health-bar">
-        <div class="health-current" id="enemy-health-bar"></div>
-      </div>
-      <div class="health-text" id="enemy-health-text"></div>
-    </section>
-  </main>
-
-  <hr />
-
-  <section class="log-container container">
-    <ul id="battle-log"></ul>
+    <div class="hp-text" id="playerHPText">130/150</div>
   </section>
 
-  <script src="/not-fight-club/game/fight.js"></script>
+  <section class="fight-control" aria-label="Battle controls">
+    <form id="attackForm" autocomplete="off" aria-describedby="formInstructions">
+      <p id="formInstructions" class="instructions">
+        Please select <strong>1</strong> attack zone and <strong>2</strong> defense zones
+      </p>
+      <div class="zones-container">
+        <fieldset class="attack-zones">
+          <legend>Attack zones</legend>
+          <label><input type="radio" name="attack" value="head" /> Head</label>
+          <label><input type="radio" name="attack" value="neck" /> Neck</label>
+          <label><input type="radio" name="attack" value="body" /> Body</label>
+          <label><input type="radio" name="attack" value="belly" /> Belly</label>
+          <label><input type="radio" name="attack" value="legs" /> Legs</label>
+        </fieldset>
+
+        <fieldset class="defense-zones">
+          <legend>Defense zones</legend>
+          <label><input type="checkbox" name="defense" value="head" /> Head</label>
+          <label><input type="checkbox" name="defense" value="neck" /> Neck</label>
+          <label><input type="checkbox" name="defense" value="body" /> Body</label>
+          <label><input type="checkbox" name="defense" value="belly" /> Belly</label>
+          <label><input type="checkbox" name="defense" value="legs" /> Legs</label>
+        </fieldset>
+      </div>
+      <button type="submit" id="attackBtn" disabled>Attack!</button>
+    </form>
+  </section>
+
+  <section class="fighter enemy" aria-label="Enemy">
+    <div class="fighter-name" id="enemyName">Snow troll</div>
+    <img
+      id="enemyAvatar" src="/not-fight-club/assets/img/b5d8aceb-2c2c-4b53-8864-0e588bf0ac76.jfif" alt="Enemy avatar" width="200" height="300" decoding="async" loading="lazy"/>
+    <div class="hp-bar">
+      <div class="hp-current" id="enemyHPBar"></div>
+    </div>
+    <div class="hp-text" id="enemyHPText">150/150</div>
+  </section>
+</main>
+
+<hr />
+<section class="battle-log" aria-live="polite" aria-atomic="false" id="battleLog">
+</section>
+
+<script src="/not-fight-club/game/fight.js" defer></script>
 </body>
 </html>
